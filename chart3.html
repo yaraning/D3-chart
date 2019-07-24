@@ -58,8 +58,8 @@
     }
 
     circle {
-        fill: #ccc;
-        stroke: #777;
+        fill: greenyellow;
+        stroke: green;
         stroke-width: 1px;
     }
 
@@ -152,9 +152,9 @@
         var circle = chart.selectAll('circle')
             .data(data)
             .enter().append('circle')
-            .attr("cx", function (d, i) {return x(i);})
-            .attr("cy", function (d, i) {return y(d);})
-            .attr("r", 3);
+            .attr("cx", function (d) {return x(d.name);})
+            .attr("cy", function (d) {return y(d.value);})
+            .attr("r", 5);
 
 
     });
