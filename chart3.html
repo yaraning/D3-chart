@@ -63,6 +63,12 @@
         stroke-width: 1px;
     }
 
+    path {
+        fill: none;
+        stroke-width: 4px;
+        stroke-linejoin: round;
+    }
+
 
 </style>
 <svg class="chart"></svg>
@@ -102,10 +108,10 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var n = 4,
-        m = 64;
+        m = 26;
 
     var x1 = d3.scale.linear()
-        .domain([0, m - 1])
+        .domain([0, m ])
         .range([0, width]);
 
     var y1 = d3.scale.linear()
@@ -140,7 +146,7 @@
             .data(segments)
             .enter().append('path')
             .attr('d', line)
-            .style('stroke', 'rgb(87, 156, 87)');
+            .style('stroke', 'rgba(53, 200, 53, 0.97)');
     });
     d3.tsv('data.tsv', type, function (error, data) {
         x.domain(data.map(function (d) {
@@ -195,52 +201,9 @@
                 return y(d.value);
             })
             .attr("r", 6);
-        /*
-                var path = chart.selectAll('path')
-                    .data(function (d) {
-                        var i = 0,n = len, new_arry = new Array(n-1);
-                        while (++i < n) new_arry[i-1] = [[i-1, d.value[i-1]], [i, d.value[i]]];
-                        return new_arry
-                    })
-                    .enter().append('path')
-                    .attr('d', line)
-                    .style('stroke', function (d) {
-                        return z(Math.atan2(d[1] - d[0], d[1] - d[0]));
-                    });  */
+
     });
 
-
-    /*
-    [
-      [
-        0.8167,
-        0.1492,
-        0.2780,
-        0.4253,
-        0.2702,
-        0.2288,
-        0.2022,
-        0.6094,
-        0.6973,
-        0.0153,
-        0.0747,
-        0.4025,
-        0.2517,
-        0.6749,
-        0.7507,
-        0.1929,
-        0.0098,
-        0.5987,
-        0.6333,
-        0.9056,
-        0.2758,
-        0.1037,
-        0.2465,
-        0.0150,
-        0.1971,
-        0.0074
-      ]
-    ]  */
 
     function type(d) {
         d.value = +d.value; // coerce to number
