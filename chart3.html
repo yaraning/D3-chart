@@ -102,21 +102,32 @@
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     var line = d3.svg.line()
-        .x(function (d) {return x(d[0]);})
-        .y(function (d) {return x(d[1]);});
+        .x(function (d) {
+            return x(d.value);
+        })
+        .y(function (d) {
+            return x(d.value - 1);
+        });
 
     var tip = d3.tip()
         .attr('class', 'd3-tip')
         .offset([-10, 0])
-        .html(function (d) {return '<strong>Name:</strong> <span style="color:red">' + d.value + '</span>';});
+        .html(function (d) {
+            return '<strong>Name:</strong> <span style="color:red">' + d.value + '</span>';
+        });
 
     chart.call(tip);
 
     d3.tsv('data.tsv', type, function (error, data) {
-        x.domain(data.map(function (d) {return d.name;}));
-        y.domain([0, d3.max(data, function (d) {return d.value;})]);
+        x.domain(data.map(function (d) {
+            return d.name;
+        }));
+        y.domain([0, d3.max(data, function (d) {
+            return d.value;
+        })]);
 
         var barWidth = width / data.length;
+        var len = data.length;
 
         chart.append('g')
             .attr('class', 'x axis')
@@ -133,31 +144,58 @@
             .style('text-anchor', 'end')
             .text('Name');
 
-        chart.append('path')
-            .data(data)
-            .attr('d', line)
-            .style('stroke', function (d) {return z;});
-
         var bar = chart.selectAll('.bar')
             .data(data)
             .enter().append('rect')
             .attr('class', 'bar')
-            .attr('x', function (d) {return x(d.name);})
+            .attr('x', function (d) {
+                return x(d.name);
+            })
             .attr('width', x.rangeBand())
-            .attr("y", function (d) {return y(d.value);})
-            .attr("height", function (d) {return height - y(d.value);})
+            .attr("y", function (d) {
+                return y(d.value);
+            })
+            .attr("height", function (d) {
+                return height - y(d.value);
+            })
             .on('mouseover', tip.show)
             .on('mouseout', tip.hide);
 
         var circle = chart.selectAll('circle')
             .data(data)
             .enter().append('circle')
-            .attr("cx", function (d) {return x(d.name);})
-            .attr("cy", function (d) {return y(d.value);})
+            .attr("cx", function (d) {
+                return x(d.name);
+            })
+            .attr("cy", function (d) {
+                return y(d.value);
+            })
             .attr("r", 5);
 
-
+        var path = chart.selectAll('path')
+            .data(function (d) {
+                var i = 0,n = len, new_arry = new Array(n-1);
+                while (++i < n) new_arry[i-1] = [[i-1, d.value[i-1]], [i, d.value[i]]];
+                return new_arry
+            })
+            .enter().append('path')
+            .attr('d', line)
+            .style('stroke', function (d) {
+                return z(Math.atan2(d[1] - d[0], d[1] - d[0]));
+            });
     });
+    /*
+    d3.json('series.json',segments, function (error, series) {
+        if (error) throw error;
+
+        var path = chart.selectAll('path')
+            .data(series)
+            .enter().append('path')
+            .attr('d', line)
+            .style('stroke', function (d) {
+                return z(Math.atan2(d[1][0] - d[0][0], d[1][1] - d[0][1]));
+            });
+    });*/
 
     function type(d) {
         d.value = +d.value; // coerce to number
@@ -165,11 +203,12 @@
     }
 
     /*
-    function segments(d) {
-        var i = 0, n = d.value.length, segments = new Array(n - 1);
-        while (++i < n) segments[i - 1] = [[i - 1, d.value[i - 1]], [i, d.value[i]]];
+    function segments(values) {
+        var i = 0, n = values.value.length, segments = new Array(n - 1);
+        while (++i < n) segments[i - 1] = [[i - 1, values.value[i - 1]], [i, values.value[i]]];
         return segments;
     }
-*/
+     */
+
 
 </script>
